@@ -2,6 +2,7 @@ package com.izmailoff.mm.config
 
 import java.util.concurrent.TimeUnit
 
+import com.izmailoff.mm.util.HoconMap
 import com.typesafe.config.ConfigFactory
 
 import scala.concurrent.duration.{FiniteDuration, _}
@@ -13,22 +14,34 @@ object GlobalAppConfig {
 
   object Application {
 
-    object Mqtt {
-
-      object MqttBroker {
-        private lazy val mqqtConsumerConf = config.getConfig("application.mqtt.mqttBroker")
-        lazy val url = mqqtConsumerConf.getString("url")
-        lazy val userName = mqqtConsumerConf.getString("userName")
-        lazy val password = mqqtConsumerConf.getString("password")
-        lazy val stashTimeToLive: FiniteDuration =
-          mqqtConsumerConf.getDuration("stashTimeToLive", TimeUnit.SECONDS) seconds
-        lazy val stashCapacity = mqqtConsumerConf.getInt("stashCapacity")
-        lazy val reconnectDelayMin: FiniteDuration =
-          mqqtConsumerConf.getDuration("reconnectDelayMin", TimeUnit.SECONDS) seconds
-        lazy val reconnectDelayMax: FiniteDuration =
-          mqqtConsumerConf.getDuration("reconnectDelayMax", TimeUnit.SECONDS) seconds
-      }
+    object MqttBroker {
+      private lazy val brokerConf = config.getConfig("application.mqttBroker")
+      lazy val url = brokerConf.getString("url")
+      lazy val userName = brokerConf.getString("userName")
+      lazy val password = brokerConf.getString("password")
+      lazy val stashTimeToLive: FiniteDuration =
+        brokerConf.getDuration("stashTimeToLive", TimeUnit.SECONDS) seconds
+      lazy val stashCapacity = brokerConf.getInt("stashCapacity")
+      lazy val reconnectDelayMin: FiniteDuration =
+        brokerConf.getDuration("reconnectDelayMin", TimeUnit.SECONDS) seconds
+      lazy val reconnectDelayMax: FiniteDuration =
+        brokerConf.getDuration("reconnectDelayMax", TimeUnit.SECONDS) seconds
     }
+
+    object Mongo {
+      private lazy val mongoConf = config.getConfig("application.mongo")
+      lazy val host = mongoConf.getString("host")
+      lazy val port = mongoConf.getInt("port")
+      lazy val dbName = mongoConf.getString("dbName")
+    }
+
+    object MqttMongo {
+      private lazy val mqttMongoConf = config.getConfig("application.mqttMongo")
+      lazy val topicsToCollectionsMappings: Map[String, List[String]] =
+        HoconMap.getMap(identity(_), _.split(";").toList.map(_.trim).filter(!_.isEmpty),
+          mqttMongoConf, "topicsToCollectionsMappings").withDefaultValue(Nil)
+    }
+
   }
 
 }

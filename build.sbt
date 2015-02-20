@@ -14,7 +14,8 @@ libraryDependencies ++= {
     //"com.github.nscala-time" %% "nscala-time" % "1.6.0",
     "com.sandinh" %% "paho-akka" % "1.0.2",
     "com.typesafe.akka" %% "akka-slf4j" % akkaVersion,
-    "ch.qos.logback" % "logback-classic" % "1.1.2"
+    "ch.qos.logback" % "logback-classic" % "1.1.2",
+    "org.specs2" %% "specs2" % "2.3.12" % "test" // TODO: update to latest
   )
 }
 

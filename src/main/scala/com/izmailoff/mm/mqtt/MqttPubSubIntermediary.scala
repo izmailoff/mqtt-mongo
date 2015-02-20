@@ -3,7 +3,7 @@ package com.izmailoff.mm.mqtt
 import akka.actor.{Actor, ActorRef, ActorSystem, Props}
 import com.sandinh.paho.akka.MqttPubSub
 import com.sandinh.paho.akka.MqttPubSub.{SubscribeAck, Subscribe, PSConfig}
-import com.izmailoff.mm.config.GlobalAppConfig.Application.Mqtt.MqttBroker
+import com.izmailoff.mm.config.GlobalAppConfig.Application.MqttBroker
 
 object MqttPubSubIntermediary {
 
