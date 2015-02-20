@@ -11,7 +11,7 @@ libraryDependencies ++= {
   val akkaVersion = "2.3.8"
   Seq(
     "com.typesafe.akka" %% "akka-actor" % akkaVersion,
-    //"com.github.nscala-time" %% "nscala-time" % "1.6.0",
+    "org.mongodb" %% "casbah" % "2.8.0",
     "com.sandinh" %% "paho-akka" % "1.0.2",
     "com.typesafe.akka" %% "akka-slf4j" % akkaVersion,
     "ch.qos.logback" % "logback-classic" % "1.1.2",

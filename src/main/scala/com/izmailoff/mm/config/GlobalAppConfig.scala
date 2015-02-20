@@ -37,9 +37,11 @@ object GlobalAppConfig {
 
     object MqttMongo {
       private lazy val mqttMongoConf = config.getConfig("application.mqttMongo")
-      lazy val topicsToCollectionsMappings: Map[String, List[String]] =
-        HoconMap.getMap(identity(_), _.split(";").toList.map(_.trim).filter(!_.isEmpty),
-          mqttMongoConf, "topicsToCollectionsMappings").withDefaultValue(Nil)
+      lazy val topicsToCollectionsMappings: Map[String, Set[String]] =
+        HoconMap.getMap(identity(_), getElems,
+          mqttMongoConf, "topicsToCollectionsMappings").withDefaultValue(Set.empty)
+      val getElems: String => Set[String] =
+        _.split(";").toList.map(_.trim).filter(!_.isEmpty).toSet
     }
 
   }
