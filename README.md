@@ -7,6 +7,7 @@ TODO: ... more details later...
 
 # Installation
 This section describes steps required to build, configure and run the application.
+TODO: add download options here
 
 ## Building MQTT-Mongo
 
@@ -60,9 +61,43 @@ This will run the application. In particular it will register with MQTT broker
 on the topics you've configured and will save all received messages to MongoDB.
 
 Please use run scripts in production environment. They take care of runtime settings
-and environment, so that you don't get it wrong.
+and environment, so that you don't get it wrong. Example scripts are in `scripts` directory of a
+project's root directory.
 
 ### Advanced Configuration
-TODO: changing defaults, etc
+The service uses [HOCON](https://github.com/typesafehub/config) configuration library. See it's documentation for
+detailed information on how you can perform advanced configuration if necessary. Otherwise see brief description
+below.
+The packaged jar contains `reference.conf` file that has default settings for all configuration parameters. Thus
+you can run the service as is if you just want to try it out. For example:
+
+    java -jar mqtt-mongo-assembly-0.1.jar
+
+In this case it will try to connect to localhost on port 27017 for MongoDB and port 1883 for MQTT broker (mosquitto).
+It will subscribe to `test` topic and save all messages to database `mqtt`, collection `messages`.
+
+In most cases you would want to override topics, location of MQTT broker and MongoDB in your config. Preferred way to
+configure the application is via additional configuration file (`application.conf`). Settings in `application.conf`
+will override default settings in `reference.conf`. Additionally you can provide settings as command line arguments
+to JVM with a `-D` flag. Here are a few examples:
+
+  1) Create a config file and provide it to the application. Contents of `application.conf`:
+
+    application.mqttMongo.topicsToCollectionsMappings = [
+      { "one" : "collectionOne" }, { "two" : "collectionTwo" }
+    ]
+
+   Run the application with this config:
+
+    java -Dconfig.file=application.conf -jar mqtt-mongo-assembly-0.1.jar
+
+  2) Provide settings via cmd args:
+
+    java -Dapplication.mongo.host=127.0.0.1 -Dapplication.mongo.dbName=adhocdb -jar mqtt-mongo-assembly-0.1.jar
+
+This application is based on Akka concurrency framework. If you want to fine tune or debug the application
+take a look at Akka [docs](http://doc.akka.io/docs/akka/snapshot/general/configuration.html). Akka can be configured
+the same way via conf file or cmd args as described above.
+
 
 
