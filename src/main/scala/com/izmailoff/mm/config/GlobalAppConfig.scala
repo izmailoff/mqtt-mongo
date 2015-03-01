@@ -6,7 +6,6 @@ import com.izmailoff.mm.util.HoconMap
 import com.typesafe.config.ConfigFactory
 
 import scala.concurrent.duration.{FiniteDuration, _}
-import scala.collection.JavaConversions._
 
 object GlobalAppConfig {
 

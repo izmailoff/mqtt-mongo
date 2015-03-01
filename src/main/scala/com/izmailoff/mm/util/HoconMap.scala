@@ -1,6 +1,7 @@
 package com.izmailoff.mm.util
 
-import com.typesafe.config.{Config, ConfigFactory}
+import com.typesafe.config.Config
+
 import scala.collection.JavaConverters._
 
 /**
