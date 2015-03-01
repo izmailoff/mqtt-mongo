@@ -5,9 +5,12 @@ import com.izmailoff.mm.config.GlobalAppConfig.Application.MqttBroker
 import com.sandinh.paho.akka.MqttPubSub
 import com.sandinh.paho.akka.MqttPubSub.PSConfig
 
-trait MqttIntermediary {
+trait MqttIntermediary
+  extends MqttIntermediaryComponent {
 
-  def startMqttIntermediary(system: ActorSystem): ActorRef =
+  def system: ActorSystem
+
+  def startMqttIntermediary(): ActorRef =
     system.actorOf(Props(classOf[MqttPubSub], PSConfig(
       brokerUrl = MqttBroker.url,
       userName = emptyToNull(MqttBroker.userName),
@@ -21,4 +24,9 @@ trait MqttIntermediary {
   private def emptyToNull(str: String) =
     if (str == null || str.trim.isEmpty) null
     else str
+}
+
+trait MqttIntermediaryComponent {
+
+  def startMqttIntermediary(): ActorRef
 }

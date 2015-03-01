@@ -1,12 +1,16 @@
 package com.izmailoff.mm.service
 
 import akka.actor.ActorSystem
+import com.izmailoff.mm.mongo.MongoDbProviderImpl
+import com.izmailoff.mm.mqtt.MqttIntermediary
 
 object Boot
   extends App
-  with MqttMongoServiceImpl {
+  with MqttMongoService
+  with MqttIntermediary
+  with MongoDbProviderImpl {
 
-  val system = ActorSystem("mqtt_mongo_system")
+  val system = ActorSystem("mqtt-mongo-system")
   import system.log
   val banner =
     """
@@ -20,9 +24,9 @@ object Boot
     """.stripMargin
   log.info(banner)
 
-  val pubSubIntermediary = startMqttIntermediary(system)
+  val pubSubIntermediary = startMqttIntermediary()
 
-  val messageConsumer = startMqttConsumer(system, pubSubIntermediary)
+  val messageConsumer = startMqttConsumer(pubSubIntermediary)
 
   log.info("APPLICATION STARTED!")
 }

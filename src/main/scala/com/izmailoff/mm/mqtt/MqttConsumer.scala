@@ -2,14 +2,15 @@ package com.izmailoff.mm.mqtt
 
 import akka.actor._
 import com.izmailoff.mm.config.GlobalAppConfig.Application.MqttMongo
-import com.izmailoff.mm.mongo.MongoSerializer
+import com.izmailoff.mm.mongo.MongoDbProvider
 import com.izmailoff.mm.util.JsonDbSerialization
+import com.mongodb.DBObject
+import com.mongodb.casbah.MongoDB
 import com.sandinh.paho.akka.MqttPubSub.{Message, Subscribe, SubscribeAck}
 
-abstract class MqttConsumer(pubSubIntermediary: ActorRef)
+class MqttConsumer(pubSubIntermediary: ActorRef, db: MongoDB)
   extends Actor
-  with ActorLogging
-  with MongoSerializer {
+  with ActorLogging {
 
   val topicsCollectionsMappings = MqttMongo.topicsToCollectionsMappings
 
@@ -22,12 +23,12 @@ abstract class MqttConsumer(pubSubIntermediary: ActorRef)
 
   def receive = {
     case msg: Message =>
-      saveDb(msg)
+      persist(msg)
     case SubscribeAck(Subscribe(topic, `self`, _)) =>
       log.info(s"Subscription to topic [$topic] acknowledged.")
   }
 
-  def saveDb(msg: Message): Unit = {
+  def persist(msg: Message): Unit = {
     val topic = msg.topic
     val payload = new String(msg.payload)
     val collections = topicsCollectionsMappings(msg.topic)
@@ -36,4 +37,17 @@ abstract class MqttConsumer(pubSubIntermediary: ActorRef)
     log.debug(s"topic: [$topic], payload: [$payload] is saved to collections: [$collections].")
   }
 
+  def saveDb(doc: DBObject, collections: Set[String]): Unit =
+    collections foreach { collName =>
+      db(collName).insert(doc)
+    }
+
+}
+
+trait MqttConsumerComponent
+extends MongoDbProvider {
+  def system: ActorSystem
+
+  def startMqttConsumer(pubSubIntermediary: ActorRef): ActorRef =
+    system.actorOf(Props(new MqttConsumer(pubSubIntermediary, db)))
 }
