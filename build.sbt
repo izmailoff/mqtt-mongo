@@ -3,7 +3,7 @@ name := "mqtt-mongo"
 
 version := "0.1"
      
-scalaVersion := "2.11.5"
+scalaVersion := "2.11.6"
 
 javacOptions ++= Seq("-target", "1.7")
 

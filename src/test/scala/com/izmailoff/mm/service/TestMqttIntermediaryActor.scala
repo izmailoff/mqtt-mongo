@@ -1,16 +1,18 @@
 package com.izmailoff.mm.service
 
-import akka.actor.{Actor, ActorRef}
+import akka.actor.{ActorLogging, Actor, ActorRef}
 import com.sandinh.paho.akka.MqttPubSub.{Message, Subscribe, SubscribeAck}
 
-class TestMqttIntermediaryActor extends Actor {
+class TestMqttIntermediaryActor extends Actor with ActorLogging {
   var topicSubscribers: Map[String, Set[ActorRef]] = Map()
 
   def receive = {
     case subRequest@Subscribe(topic, subscriber, _) =>
       updateSubscribers(topic, subscriber)
+      log.debug(s"Current subscribers: $topicSubscribers")
       subscriber ! SubscribeAck(subRequest)
     case msg: Message =>
+      log.debug(s"Forwarding message: [$msg] to subscribers.")
       forwardToSubscribers(msg)
   }
 

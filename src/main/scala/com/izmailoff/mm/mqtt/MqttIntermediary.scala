@@ -17,9 +17,9 @@ trait MqttIntermediary
       password = emptyToNull(MqttBroker.password),
       stashTimeToLive = MqttBroker.stashTimeToLive,
       stashCapacity = MqttBroker.stashCapacity,
-      reconnectDelayMin = MqttBroker.reconnectDelayMin,
+      reconnectDelayMin = MqttBroker.reconnectDelay,
       reconnectDelayMax = MqttBroker.reconnectDelayMax
-    )))
+    ), "MqttIntermediary"))
 
   private def emptyToNull(str: String) =
     if (str == null || str.trim.isEmpty) null

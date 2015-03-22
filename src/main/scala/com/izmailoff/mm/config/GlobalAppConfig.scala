@@ -9,7 +9,7 @@ import scala.concurrent.duration.{FiniteDuration, _}
 
 object GlobalAppConfig {
 
-  private val config = ConfigFactory.load()
+  val config = ConfigFactory.load()
 
   object Application {
 
@@ -21,7 +21,7 @@ object GlobalAppConfig {
       lazy val stashTimeToLive: FiniteDuration =
         brokerConf.getDuration("stashTimeToLive", TimeUnit.SECONDS) seconds
       lazy val stashCapacity = brokerConf.getInt("stashCapacity")
-      lazy val reconnectDelayMin: FiniteDuration =
+      lazy val reconnectDelay: FiniteDuration =
         brokerConf.getDuration("reconnectDelayMin", TimeUnit.SECONDS) seconds
       lazy val reconnectDelayMax: FiniteDuration =
         brokerConf.getDuration("reconnectDelayMax", TimeUnit.SECONDS) seconds
