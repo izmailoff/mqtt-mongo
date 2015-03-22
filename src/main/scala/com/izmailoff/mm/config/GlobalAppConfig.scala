@@ -41,6 +41,7 @@ object GlobalAppConfig {
           mqttMongoConf, "topicsToCollectionsMappings").withDefaultValue(Set.empty)
       val getElems: String => Set[String] =
         _.split(";").toList.map(_.trim).filter(!_.isEmpty).toSet
+      lazy val serializationFormat = SerializationFormat.withName(mqttMongoConf.getString("serializationFormat"))
     }
 
   }

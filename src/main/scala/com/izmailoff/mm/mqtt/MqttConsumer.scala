@@ -3,7 +3,7 @@ package com.izmailoff.mm.mqtt
 import akka.actor._
 import com.izmailoff.mm.config.GlobalAppConfig.Application.MqttMongo
 import com.izmailoff.mm.mongo.MongoDbProvider
-import com.izmailoff.mm.util.JsonDbSerialization
+import com.izmailoff.mm.util.DbSerialization._
 import com.mongodb.DBObject
 import com.mongodb.casbah.MongoDB
 import com.sandinh.paho.akka.MqttPubSub.{Message, Subscribe, SubscribeAck}
@@ -23,29 +23,28 @@ class MqttConsumer(pubSubIntermediary: ActorRef, db: MongoDB)
 
   def receive = {
     case msg: Message =>
-      persist(msg)
+      val (doc, collections) = getPersistenceRecipe(msg)
+      saveDb(doc, collections)
+      log.debug(s"topic: [${msg.topic}], payload: [$doc] is saved to collections: [$collections].")
     case SubscribeAck(Subscribe(topic, `self`, _)) =>
       log.info(s"Subscription to topic [$topic] acknowledged.")
   }
 
-  def persist(msg: Message): Unit = {
-    val topic = msg.topic
-    val payload = new String(msg.payload)
-    val collections = topicsCollectionsMappings(msg.topic)
-    val jsonDoc = JsonDbSerialization.parseSafe(payload)
-    saveDb(jsonDoc, collections)
-    log.debug(s"topic: [$topic], payload: [$payload] is saved to collections: [$collections].")
+  def getPersistenceRecipe(msg: Message) = {
+    import msg._
+    val collections = topicsCollectionsMappings(topic)
+    val doc = serialize(payload)
+    (doc, collections)
   }
 
   def saveDb(doc: DBObject, collections: Set[String]): Unit =
     collections foreach { collName =>
       db(collName).insert(doc)
     }
-
 }
 
 trait MqttConsumerComponent
-extends MongoDbProvider {
+  extends MongoDbProvider {
   def system: ActorSystem
 
   def startMqttConsumer(pubSubIntermediary: ActorRef): ActorRef =
