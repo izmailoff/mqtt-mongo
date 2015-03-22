@@ -2,7 +2,7 @@
 [![Build Status](https://travis-ci.org/izmailoff/mqtt-mongo.png?branch=master)](https://travis-ci.org/izmailoff/mqtt-mongo)
 
 # Test Coverage
-[![Coverage Status](https://coveralls.io/repos/izmailoff/mqtt-mongo/badge.svg)](https://coveralls.io/r/izmailoff/mqtt-mongo)
+[![Coverage Status](https://coveralls.io/repos/izmailoff/mqtt-mongo/badge.svg?branch=master)](https://coveralls.io/r/izmailoff/mqtt-mongo?branch=master)
 	
 # MQTT-Mongo
 This is a generic service that subscribes to MQQT broker and saves messages to MongoDB.
