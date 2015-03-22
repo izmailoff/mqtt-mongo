@@ -22,8 +22,8 @@ libraryDependencies ++= {
   )
 }
 
-
 resolvers ++= Seq(
   "Akka Snapshot Repository" at "http://repo.akka.io/snapshots/",
-  "Paho Eclipse Repository" at "https://repo.eclipse.org/content/repositories/paho-releases/"
+  "Paho Eclipse Repository" at "https://repo.eclipse.org/content/repositories/paho-releases/",
+  Classpaths.sbtPluginReleases
 )
