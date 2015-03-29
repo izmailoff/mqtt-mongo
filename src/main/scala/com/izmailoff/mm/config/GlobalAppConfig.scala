@@ -21,7 +21,7 @@ object GlobalAppConfig {
       lazy val stashTimeToLive: FiniteDuration =
         brokerConf.getDuration("stashTimeToLive", TimeUnit.SECONDS) seconds
       lazy val stashCapacity = brokerConf.getInt("stashCapacity")
-      lazy val reconnectDelay: FiniteDuration =
+      lazy val reconnectDelayMin: FiniteDuration =
         brokerConf.getDuration("reconnectDelayMin", TimeUnit.SECONDS) seconds
       lazy val reconnectDelayMax: FiniteDuration =
         brokerConf.getDuration("reconnectDelayMax", TimeUnit.SECONDS) seconds
