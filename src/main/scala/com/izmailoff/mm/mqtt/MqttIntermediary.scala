@@ -20,7 +20,7 @@ trait MqttIntermediary
       stashCapacity = MqttBroker.stashCapacity,
       reconnectDelayMin = MqttBroker.reconnectDelayMin,
       reconnectDelayMax = MqttBroker.reconnectDelayMax
-    ), "MqttIntermediary"))
+    )), name = "MqttIntermediary")
 }
 
 trait MqttIntermediaryComponent {
