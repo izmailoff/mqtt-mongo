@@ -1,4 +1,6 @@
 # Build Status
+
+[![Join the chat at https://gitter.im/izmailoff/mqtt-mongo](https://badges.gitter.im/izmailoff/mqtt-mongo.svg)](https://gitter.im/izmailoff/mqtt-mongo?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Build Status](https://travis-ci.org/izmailoff/mqtt-mongo.png?branch=master)](https://travis-ci.org/izmailoff/mqtt-mongo)
 
 # Test Coverage
