@@ -7,8 +7,14 @@
 [![Coverage Status](https://coveralls.io/repos/izmailoff/mqtt-mongo/badge.svg?branch=master)](https://coveralls.io/r/izmailoff/mqtt-mongo?branch=master)
 	
 # MQTT-Mongo
-This is a generic service that subscribes to MQQT broker and saves messages to MongoDB.
-TODO: ... more details later...
+This is a generic service that subscribes to MQTT broker and saves messages to MongoDB.
+
+Say you have an MQTT broker that receives messages and you want those messages to be saved
+in MongoDB. This service should be an ideal fit for such purpose. You can save a message in either
+`String`, `JSON` or `Binary` format to one or more collections.
+
+This service follows [Reactive Application Design](http://www.reactivemanifesto.org), i.e. responsive,
+resilient, elastic, message driven. What that means that it should work fast and be able to recover from errors.
 
 # Installation
 This section describes steps required to build, configure and run the application.
@@ -22,7 +28,7 @@ Install [mosquitto](http://mosquitto.org/download/) MQTT broker and client binar
 
     sudo yum install mosquitto
 
-Install (MongoDB)[http://docs.mongodb.org/manual/tutorial/install-mongodb-on-red-hat-centos-or-fedora-linux/].
+Install [MongoDB](http://docs.mongodb.org/manual/tutorial/install-mongodb-on-red-hat-centos-or-fedora-linux/).
 Essentially run:
 
     sudo yum install mongodb-org
@@ -91,7 +97,7 @@ Look at the output to find where build artefacts go (docs, jars, etc).
 ## System Requirements
 To run compiled JAR file you should have installed:
 
- * Java Runtime Environment (JRE) >= 1.7
+ * Java Runtime Environment (JRE) >= 1.8
  * MongoDB
  * mosquitto or any other MQTT broker
 
@@ -143,25 +149,79 @@ take a look at Akka [docs](http://doc.akka.io/docs/akka/snapshot/general/configu
 the same way via conf file or cmd args as described above.
 
 # Questions and Answers
-Q: Can I create a capped collection before I start using mqtt-mongo so that old messages get deleted automatically.
-A: Absolutely, mqtt-mongo performs inserts only.
+Q: Can I create a capped collection before I start using mqtt-mongo so that old messages get deleted automatically?
+
+A: Absolutely, mqtt-mongo performs inserts only. A new collection is created upon first insert if it does not exist -
+standard MongoDB behaviour.
+
+
 
 Q: What happens if MongoDB can't keep up with insert rate?
+
 A: ...
+
+
 
 Q: What happens if connection to MongoDB gets lost?
+
 A: ...
+
 
 Q: What happens if connection to MQTT broker gets lost?
+
 A: ...
+
+
 
 Q: What happens if mqtt-broker encounters any other failures/exceptions?
+
 A: ...
 
+
+
 Q: Can I make it insert into multiple databases?
+
 A: mqtt-mongo supports inserts into multiple collections. I thought support of
 multiple databases would complicate configuration and implementation.
 You can simply start another instance of mqtt-mongo with the same config
 except for the database connection settings.
 
 
+
+Q: What are other known alternatives?
+
+A: 
+
+
+
+Q: Do you have any performance test data?
+
+A: Coming soon ...
+
+
+
+Q: How do I scale this service?
+
+A: There are multiple options.
+   
+   * Single instance:
+   First of all check the config - you can customize how many threads to use and memory settings.
+   Check that JVM is started with appropriate cmd args - enough heap memory, etc.
+   
+   * Multiple independent instances:
+   Each mqtt-mongo instance can run on a single server, subscribe to a single topic and save messages to a single collection.
+   This would be quite an unusual setup in case you have enourmous amount of messages being injested.
+   
+   * Mongo scaling:
+   Use sharded collections to distribute writes. Use fire and forget write concern level.
+   
+   --If you exhaust all these possibilities or you have a single topic only and can't scale in other ways
+   --this service can be implemented as a cluster that runs on multiple machines.
+
+
+
+Q: What if I want to apply some processing steps before the message is saved to Mongo?
+
+A: Currently preprocessing/filtering of messages is non-existent or customizable. You can
+fork this project and implement that logic yourself in Scala or Java. If you are interested
+in plugin support for this purpose let me know and I can easily add it.
