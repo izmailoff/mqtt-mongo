@@ -1,7 +1,7 @@
 package com.izmailoff.mm.service
 
-import akka.actor.{ActorLogging, Actor, ActorRef}
-import com.sandinh.paho.akka.MqttPubSub.{Message, Subscribe, SubscribeAck}
+import akka.actor.{Actor, ActorLogging, ActorRef}
+import com.sandinh.paho.akka.{Message, Subscribe, SubscribeAck}
 
 class TestMqttIntermediaryActor extends Actor with ActorLogging {
   var topicSubscribers: Map[String, Set[ActorRef]] = Map()
@@ -10,7 +10,7 @@ class TestMqttIntermediaryActor extends Actor with ActorLogging {
     case subRequest@Subscribe(topic, subscriber, _) =>
       updateSubscribers(topic, subscriber)
       log.debug(s"Current subscribers: $topicSubscribers")
-      subscriber ! SubscribeAck(subRequest)
+      subscriber ! SubscribeAck(subRequest, None)
     case msg: Message =>
       log.debug(s"Forwarding message: [$msg] to subscribers.")
       forwardToSubscribers(msg)

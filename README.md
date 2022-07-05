@@ -5,6 +5,9 @@
 
 # Test Coverage
 [![Coverage Status](https://coveralls.io/repos/izmailoff/mqtt-mongo/badge.svg?branch=master)](https://coveralls.io/r/izmailoff/mqtt-mongo?branch=master)
+
+Tests have been disabled due to incompatibility of Fongo with latest Scala Mongo driver. This needs to be resolved one 
+way or the other. For now build without unit tests.
 	
 # MQTT-Mongo
 This is a generic service that subscribes to MQTT broker and saves messages to MongoDB.
@@ -44,6 +47,10 @@ Download or build a MQTT-Mongo JAR.
 Run MQTT-Mongo:
 
     java -jar mqtt-mongo-assembly-0.1.jar
+
+Or from project root dir:
+
+    java -jar target/scala-2.13/mqtt-mongo-assembly-0.1.jar
 
 By now everything should be working and you can start testing the service.
 

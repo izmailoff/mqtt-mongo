@@ -19,12 +19,12 @@ object GlobalAppConfig {
       lazy val userName = brokerConf.getString("userName")
       lazy val password = brokerConf.getString("password")
       lazy val stashTimeToLive: FiniteDuration =
-        brokerConf.getDuration("stashTimeToLive", TimeUnit.SECONDS) seconds
+        brokerConf.getDuration("stashTimeToLive", TimeUnit.SECONDS).seconds
       lazy val stashCapacity = brokerConf.getInt("stashCapacity")
       lazy val reconnectDelayMin: FiniteDuration =
-        brokerConf.getDuration("reconnectDelayMin", TimeUnit.SECONDS) seconds
+        brokerConf.getDuration("reconnectDelayMin", TimeUnit.SECONDS).seconds
       lazy val reconnectDelayMax: FiniteDuration =
-        brokerConf.getDuration("reconnectDelayMax", TimeUnit.SECONDS) seconds
+        brokerConf.getDuration("reconnectDelayMax", TimeUnit.SECONDS).seconds
     }
 
     object Mongo {
@@ -32,6 +32,7 @@ object GlobalAppConfig {
       lazy val host = mongoConf.getString("host")
       lazy val port = mongoConf.getInt("port")
       lazy val dbName = mongoConf.getString("dbName")
+      lazy val uri = mongoConf.getString("uri")
     }
 
     object MqttMongo {
@@ -42,6 +43,7 @@ object GlobalAppConfig {
       val getElems: String => Set[String] =
         _.split(";").toList.map(_.trim).filter(!_.isEmpty).toSet
       lazy val serializationFormat = SerializationFormat.withName(mqttMongoConf.getString("serializationFormat"))
+      lazy val payloadField = mqttMongoConf.getString("payloadField")
     }
 
   }

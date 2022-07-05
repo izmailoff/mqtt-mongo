@@ -1,17 +1,16 @@
 package com.izmailoff.mm.mongo
 
 import com.izmailoff.mm.config.GlobalAppConfig.Application.Mongo
-import com.mongodb.casbah.Imports._
+import org.mongodb.scala.{MongoClient, MongoDatabase}
 
 trait MongoDbProvider {
 
-  val db: MongoDB
+  val db: MongoDatabase
 }
 
 trait MongoDbProviderImpl
 extends MongoDbProvider {
 
-  private val mongoClient = MongoClient(Mongo.host, Mongo.port)
-
-  val db = mongoClient(Mongo.dbName)
+  private val client = MongoClient(Mongo.uri)
+  val db = client.getDatabase(Mongo.dbName)
 }

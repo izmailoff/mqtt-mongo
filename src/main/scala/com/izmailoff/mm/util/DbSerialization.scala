@@ -2,42 +2,36 @@ package com.izmailoff.mm.util
 
 import com.izmailoff.mm.config.GlobalAppConfig.Application.MqttMongo
 import com.izmailoff.mm.config.SerializationFormat._
-import com.mongodb.DBObject
-import com.mongodb.casbah.commons.MongoDBObject
-import org.bson.types.BasicBSONList
+import org.mongodb.scala.bson._
 
-import scala.util.{Failure, Success, Try}
+import scala.util.Try
 
 object DbSerialization {
 
-  val PAYLOAD_FIELD = "payload"
+  val PAYLOAD_FIELD = MqttMongo.payloadField
 
-  def serialize(payload: Array[Byte]): DBObject =
+  def serialize(payload: Array[Byte]): Document =
     MqttMongo.serializationFormat match {
       case JSON => serializeToJson(payload)
       case BINARY => serializeToBinary(payload)
       case STRING => serializeToString(payload)
     }
 
-  def serializeToJson(payload: Array[Byte]) =
+  def serializeToJson(payload: Array[Byte]): Document =
     parseSafe(new String(payload))
 
   def serializeToBinary(payload: Array[Byte]) =
-    MongoDBObject(PAYLOAD_FIELD -> payload)
+    Document(PAYLOAD_FIELD -> payload)
 
   def serializeToString(payload: Array[Byte]) =
-    MongoDBObject(PAYLOAD_FIELD -> new String(payload))
+    Document(PAYLOAD_FIELD -> new String(payload))
 
-  def parseSafe(msg: String): DBObject =
+  def parseSafe(msg: String): Document =
     Try {
-      com.mongodb.util.JSON.parse(msg).asInstanceOf[DBObject]
-    } match {
-      case Failure(e) =>
-        MongoDBObject(PAYLOAD_FIELD -> msg)
-      case Success(json) =>
-        json match {
-          case j: BasicBSONList => MongoDBObject(PAYLOAD_FIELD -> json)
-          case other => other
-        }
+      Document(msg)
+    } recover {
+      case _ => Document(f"""{"$PAYLOAD_FIELD": $msg}""")
+    } getOrElse {
+        Document(PAYLOAD_FIELD -> msg)
     }
 }
