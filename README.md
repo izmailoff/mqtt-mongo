@@ -8,7 +8,7 @@
 
 Tests have been disabled due to incompatibility of Fongo with latest Scala Mongo driver. This needs to be resolved one 
 way or the other. For now build without unit tests.
-	
+
 # MQTT-Mongo
 This is a generic service that subscribes to MQTT broker and saves messages to MongoDB.
 
@@ -18,6 +18,38 @@ in MongoDB. This service should be an ideal fit for such purpose. You can save a
 
 This service follows [Reactive Application Design](http://www.reactivemanifesto.org), i.e. responsive,
 resilient, elastic, message driven. What that means that it should work fast and be able to recover from errors.
+
+# Docker
+You can pull a prebuilt image from [Dockerhub](https://hub.docker.com/repository/docker/izmailoff/mqtt-mongo).
+
+# Quick Start
+Install MQTT broker and MongoDB. Default settings for Mongo and Mosquitto will work without any additional configuration.
+
+Ubuntu example:
+
+    sudo apt install mosquitto mongodb-org-server
+
+Start services, then pull and run docker.
+
+    docker pull izmailoff/mqtt-mongo
+    docker run --network=host izmailoff/mqtt-mongo
+
+Send some test messages:
+
+    mosquitto_pub -t "test" -m "Should work"
+    mosquitto_pub -t "test" -m '{ "someField" : "Some value", "int" : 123 }'
+
+They should be saved in Mongo, which you can find with:
+
+    echo 'db.messages.find({});' | mongo --quiet mqtt
+
+Default Topic: `test`
+
+Default Mongo DB: `mqtt`
+
+Default Mongo Collection: `messages`
+
+Default Message Storage Format: `JSON`
 
 # Installation
 This section describes steps required to build, configure and run the application.
@@ -42,7 +74,7 @@ Start mosquitto and mongod services if not started already:
     sudo systemctl start mongod
     sudo systemctl start mosquitto
 
-Download or build a MQTT-Mongo JAR.
+Download or build a MQTT-Mongo JAR (see below).
 
 Run MQTT-Mongo:
 
@@ -95,9 +127,15 @@ You can also run it as a single command from OS shell:
 
 This will run all tests and generate a single jar file named similar to: `mqtt-mongo-assembly-0.1.jar`.
 
+To generate docker image:
+
+    > sbt clean assembly docker
+
+Docker will be tagged with a name like this: `izmailoff/mqtt-mongo:0.2`.
+
 Here is a full list of commands in case you want to generate projects and documentation, etc:
 
-    > sbt clean compile test doc assembly
+    > sbt clean compile test doc assembly docker
     
 Look at the output to find where build artefacts go (docs, jars, etc).
 
@@ -154,6 +192,8 @@ to JVM with a `-D` flag. Here are a few examples:
 This application is based on Akka concurrency framework. If you want to fine tune or debug the application
 take a look at Akka [docs](http://doc.akka.io/docs/akka/snapshot/general/configuration.html). Akka can be configured
 the same way via conf file or cmd args as described above.
+
+TODO: configuration examples from environment variables and in Docker.
 
 # Questions and Answers
 Q: Can I create a capped collection before I start using mqtt-mongo so that old messages get deleted automatically?
@@ -232,3 +272,9 @@ Q: What if I want to apply some processing steps before the message is saved to 
 A: Currently preprocessing/filtering of messages is non-existent or customizable. You can
 fork this project and implement that logic yourself in Scala or Java. If you are interested
 in plugin support for this purpose let me know and I can easily add it.
+
+# Contributors and Feedback
+Feel free to open a pull request if you like to fix or improve something as long as it doesn't add features out of 
+scope of this project.
+
+If you want to share feedback or have questions please try Gitter.

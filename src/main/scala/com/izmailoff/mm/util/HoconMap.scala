@@ -2,7 +2,9 @@ package com.izmailoff.mm.util
 
 import com.typesafe.config.Config
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters.CollectionHasAsScala
+
+
 
 /**
  * Reads a map of values from HOCON config file (.conf) since such functionality is not provided by default.

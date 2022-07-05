@@ -5,7 +5,7 @@ import com.izmailoff.mm.config.GlobalAppConfig.Application.MqttMongo
 import com.izmailoff.mm.mongo.MongoDbProvider
 import com.izmailoff.mm.util.DbSerialization._
 import com.sandinh.paho.akka.{Message, Subscribe, SubscribeAck}
-import org.mongodb.scala.{Completed, Document, MongoDatabase, Observer}
+import org.mongodb.scala.{Document, MongoDatabase, Observer}
 
 class MqttConsumer(pubSubIntermediary: ActorRef, db: MongoDatabase)
   extends Actor
@@ -13,8 +13,8 @@ class MqttConsumer(pubSubIntermediary: ActorRef, db: MongoDatabase)
 
   val topicsCollectionsMappings = MqttMongo.topicsToCollectionsMappings
 
-  private def resultHandler(doc: Document) = new Observer[Completed] {
-    override def onNext(result: Completed): Unit = log.debug(f"Inserted $doc into db successfully.")
+  private def resultHandler(doc: Document) = new Observer[Any] {
+    override def onNext(result: Any): Unit = log.debug(f"Inserted $doc into db successfully.")
     override def onError(e: Throwable): Unit = log.error(e, f"Failed to insert $doc into db.")
     override def onComplete(): Unit = log.debug(f"Insert $doc finished.")
   }
