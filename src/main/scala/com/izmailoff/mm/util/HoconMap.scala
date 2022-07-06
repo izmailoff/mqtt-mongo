@@ -9,7 +9,7 @@ import scala.jdk.CollectionConverters.CollectionHasAsScala
 /**
  * Reads a map of values from HOCON config file (.conf) since such functionality is not provided by default.
  */
-object HoconMap:
+object HoconMap {
 
   /**
    * Reads a map of values from conf
@@ -22,12 +22,14 @@ object HoconMap:
    * @return returns a map that contains all values from the config or throws an exception if configuration
    *         was not in a correct format.
    */
-  def getMap[Key, Value](keyF: String => Key, valF: String => Value, conf: Config, path: String): Map[Key, Value] =
+  def getMap[Key, Value](keyF: String => Key, valF: String => Value, conf: Config, path: String): Map[Key, Value] = {
     val list = conf.getObjectList(path).asScala
-    (for
+    (for {
       item <- list
       entry <- item.entrySet().asScala
       key = keyF(entry.getKey)
       value = valF(entry.getValue.unwrapped().toString)
-    yield (key, value)).toMap
+    } yield (key, value)).toMap
+  }
 
+}

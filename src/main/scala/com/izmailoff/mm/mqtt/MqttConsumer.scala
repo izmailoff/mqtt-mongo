@@ -9,7 +9,7 @@ import org.mongodb.scala.{Document, MongoDatabase, Observer}
 
 class MqttConsumer(pubSubIntermediary: ActorRef, db: MongoDatabase)
   extends Actor
-  with ActorLogging:
+  with ActorLogging {
 
   val topicsCollectionsMappings = MqttMongo.topicsToCollectionsMappings
 
@@ -26,7 +26,7 @@ class MqttConsumer(pubSubIntermediary: ActorRef, db: MongoDatabase)
       case (t, c) => pubSubIntermediary ! Subscribe(t, self)
     }
 
-  def receive: PartialFunction[Any,Unit] =
+  def receive: PartialFunction[Any,Unit] = {
     case msg: Message =>
       val (doc, collections) = getPersistenceRecipe(msg)
       saveDb(doc, collections)
@@ -36,22 +36,26 @@ class MqttConsumer(pubSubIntermediary: ActorRef, db: MongoDatabase)
     case SubscribeAck(Subscribe(topic, `self`, _), Some(err)) =>
       log.error(err, s"Subscription to topic [$topic] failed.")
       // TODO: implement error recovery or terminate the service
+  }
 
-  def getPersistenceRecipe(msg: Message): (Document, Set[String]) =
+  def getPersistenceRecipe(msg: Message): (Document, Set[String]) = {
     import msg._
     val collections = topicsCollectionsMappings(topic)
     val doc = serialize(payload)
     (doc, collections)
+  }
 
   def saveDb(doc: Document, collections: Set[String]): Unit =
     collections foreach { collName =>
       val res = db.getCollection[Document](collName).insertOne(doc)
       res.subscribe(resultHandler(doc))
     }
+}
 
 trait MqttConsumerComponent
-  extends MongoDbProvider:
+  extends MongoDbProvider {
   def system: ActorSystem
 
   def startMqttConsumer(pubSubIntermediary: ActorRef): ActorRef =
     system.actorOf(Props(new MqttConsumer(pubSubIntermediary, db)))
+}

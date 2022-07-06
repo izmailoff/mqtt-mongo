@@ -9,7 +9,7 @@ object Boot
   extends App
   with MqttMongoService
   with MqttIntermediary
-  with MongoDbProviderImpl:
+  with MongoDbProviderImpl {
 
   val system: ActorSystem = ActorSystem("mqtt-mongo-system")
   import system.log
@@ -30,3 +30,4 @@ object Boot
   val messageConsumer: ActorRef = startMqttConsumer(pubSubIntermediary)
 
   log.info("APPLICATION STARTED!")
+}

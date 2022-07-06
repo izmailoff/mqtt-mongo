@@ -6,7 +6,7 @@ import com.sandinh.paho.akka.{ConnOptions, MqttPubSub, PSConfig}
 import com.izmailoff.mm.util.StringUtils._
 
 trait MqttIntermediary
-  extends MqttIntermediaryComponent:
+  extends MqttIntermediaryComponent {
 
   def system: ActorSystem
 
@@ -19,7 +19,9 @@ trait MqttIntermediary
       reconnectDelayMin = MqttBroker.reconnectDelayMin,
       reconnectDelayMax = MqttBroker.reconnectDelayMax
     )), name = "MqttIntermediary")
+}
 
-trait MqttIntermediaryComponent:
+trait MqttIntermediaryComponent {
 
   def startMqttIntermediary(): ActorRef
+}
