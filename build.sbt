@@ -18,6 +18,8 @@ scalacOptions ++= Seq(
 //  "-Ytasty-reader"
 )
 
+scalacOptions ++= Seq("-indent", "-rewrite")
+
 enablePlugins(DockerPlugin)
 
 //addDependencyTreePlugin
