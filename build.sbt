@@ -3,7 +3,7 @@ name := "mqtt-mongo"
 
 version := "1.0.0"
 
-scalaVersion := "3.1.1"
+scalaVersion := "3.1.3"
 
 organization := "izmailoff"
 
@@ -15,10 +15,9 @@ scalacOptions ++= Seq(
   "-language:implicitConversions",
 //  "-Xtarget:8",
   "-unchecked",
-//  "-Ytasty-reader"
+  "-indent",
 )
 
-scalacOptions ++= Seq("-indent", "-rewrite")
 
 enablePlugins(DockerPlugin)
 
