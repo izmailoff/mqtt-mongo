@@ -8,6 +8,4 @@ addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.6.1")
 
 addSbtPlugin("se.marcuslonnberg" % "sbt-docker" % "1.8.3")
 
-addSbtPlugin("ch.epfl.scala" % "sbt-scala3-migrate" % "0.5.1")
-
 addSbtPlugin("org.scala-sbt" % "sbt-dependency-tree" % "1.7.0-RC2")
