@@ -12,5 +12,5 @@ trait MongoDbProviderImpl
 extends MongoDbProvider {
 
   private val client = MongoClient(Mongo.uri)
-  val db = client.getDatabase(Mongo.dbName)
+  val db: MongoDatabase = client.getDatabase(Mongo.dbName)
 }

@@ -21,12 +21,12 @@ class MqttConsumer(pubSubIntermediary: ActorRef, db: MongoDatabase)
 
   subscribe()
 
-  def subscribe() =
+  def subscribe(): Unit =
     topicsCollectionsMappings foreach {
       case (t, c) => pubSubIntermediary ! Subscribe(t, self)
     }
 
-  def receive = {
+  def receive: PartialFunction[Any,Unit] = {
     case msg: Message =>
       val (doc, collections) = getPersistenceRecipe(msg)
       saveDb(doc, collections)
@@ -38,7 +38,7 @@ class MqttConsumer(pubSubIntermediary: ActorRef, db: MongoDatabase)
       // TODO: implement error recovery or terminate the service
   }
 
-  def getPersistenceRecipe(msg: Message) = {
+  def getPersistenceRecipe(msg: Message): (Document, Set[String]) = {
     import msg._
     val collections = topicsCollectionsMappings(topic)
     val doc = serialize(payload)
