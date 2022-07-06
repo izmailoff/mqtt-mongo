@@ -6,46 +6,42 @@ import com.izmailoff.mm.util.HoconMap
 import com.typesafe.config.ConfigFactory
 
 import scala.concurrent.duration.{FiniteDuration, _}
+import com.typesafe.config.Config
 
-object GlobalAppConfig {
+object GlobalAppConfig:
 
-  val config = ConfigFactory.load()
+  val config: Config = ConfigFactory.load()
 
-  object Application {
+  object Application:
 
-    object MqttBroker {
+    object MqttBroker:
       private lazy val brokerConf = config.getConfig("application.mqttBroker")
-      lazy val url = brokerConf.getString("url")
-      lazy val userName = brokerConf.getString("userName")
-      lazy val password = brokerConf.getString("password")
+      lazy val url: String = brokerConf.getString("url")
+      lazy val userName: String = brokerConf.getString("userName")
+      lazy val password: String = brokerConf.getString("password")
       lazy val stashTimeToLive: FiniteDuration =
         brokerConf.getDuration("stashTimeToLive", TimeUnit.SECONDS).seconds
-      lazy val stashCapacity = brokerConf.getInt("stashCapacity")
+      lazy val stashCapacity: Int = brokerConf.getInt("stashCapacity")
       lazy val reconnectDelayMin: FiniteDuration =
         brokerConf.getDuration("reconnectDelayMin", TimeUnit.SECONDS).seconds
       lazy val reconnectDelayMax: FiniteDuration =
         brokerConf.getDuration("reconnectDelayMax", TimeUnit.SECONDS).seconds
-    }
 
-    object Mongo {
+    object Mongo:
       private lazy val mongoConf = config.getConfig("application.mongo")
-      lazy val host = mongoConf.getString("host")
-      lazy val port = mongoConf.getInt("port")
-      lazy val dbName = mongoConf.getString("dbName")
-      lazy val uri = mongoConf.getString("uri")
-    }
+      lazy val host: String = mongoConf.getString("host")
+      lazy val port: Int = mongoConf.getInt("port")
+      lazy val dbName: String = mongoConf.getString("dbName")
+      lazy val uri: String = mongoConf.getString("uri")
 
-    object MqttMongo {
+    object MqttMongo:
       private lazy val mqttMongoConf = config.getConfig("application.mqttMongo")
       lazy val topicsToCollectionsMappings: Map[String, Set[String]] =
         HoconMap.getMap(identity(_), getElems,
           mqttMongoConf, "topicsToCollectionsMappings").withDefaultValue(Set.empty)
       val getElems: String => Set[String] =
         _.split(";").toList.map(_.trim).filter(!_.isEmpty).toSet
-      lazy val serializationFormat = SerializationFormat.withName(mqttMongoConf.getString("serializationFormat"))
-      lazy val payloadField = mqttMongoConf.getString("payloadField")
-    }
+      lazy val serializationFormat: SerializationFormat.Value = SerializationFormat.withName(mqttMongoConf.getString("serializationFormat"))
+      lazy val payloadField: String = mqttMongoConf.getString("payloadField")
 
-  }
 
-}
