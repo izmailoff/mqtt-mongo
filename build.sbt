@@ -1,7 +1,7 @@
 
 name := "mqtt-mongo"
 
-version := "1.0.0"
+version := "1.1.0"
 
 scalaVersion := "3.1.3"
 
